@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<robot name="circularbot_essential" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<!-- Defining the colors used in this robot -->
+  <material name="Black">
+    <color rgba="0.0 0.0 0.0 1.0"/>
+  </material>
+
+  <material name="White">
+    <color rgba="1.0 1.0 1.0 1.0"/>
+  </material>
+
+  <material name="Red">
+    <color rgba="0.8 0.0 0.0 1.0"/>
+  </material>
+
+  <material name="Green">
+    <color rgba="0.0 0.8 0.0 1.0"/>
+  </material>
+
+  <material name="Blue">
+    <color rgba="0.0 0.0 0.8 1.0"/>
+  </material>
+
+  <!-- PROPERTY LIST -->
+  <!--All units in m-kg-s-radians unit system -->
+  <xacro:property name="M_PI" value="3.1415926535897931" />
+  <xacro:property name="M_PI_2" value="1.570796327" />
+  <xacro:property name="DEG_TO_RAD" value="0.017453293" />
+
+  <!-- Body -->
+  <xacro:property name="base_radius" value="0.3" /> <!--m-->
+  <xacro:property name="base_height" value="0.5" /> 
+  <xacro:property name="base_mass" value="50" /> <!--kg-->
+
+  <!-- Wheels -->
+  <xacro:property name="wheel_diameter" value="0.14" /> 
+  <xacro:property name="wheel_radius" value="0.07" />
+  <xacro:property name="wheel_height" value="0.1" />
+  <xacro:property name="wheel_mass" value="2" />
+  <xacro:property name="wheel_spacing" value="0.4" />
+
+  <!-- Caster -->
+  <xacro:property name="caster_height" value="0.04" />
+  <xacro:property name="caster_diameter" value="0.1" /> 
+  <xacro:property name="caster_radius" value="0.05" /> 
+  <xacro:property name="caster_mass" value="1.0" />
+  <xacro:property name="caster_spacing" value="0.5" />
+
+  <!-- IMU -->
+  <xacro:property name="imu_length" value="0.02" /> <!--m-->
+  <xacro:property name="imu_width" value="0.02" /> 
+  <xacro:property name="imu_height" value="0.01" /> 
+  <xacro:property name="imu_mass" value="0.01" /> <!--kg-->
+
+  <!-- Lidar -->
+  <xacro:property name="lidar_diameter" value="0.05" /> 
+  <xacro:property name="lidar_radius" value="0.025" />
+  <xacro:property name="lidar_height" value="0.05" />
+  <xacro:property name="lidar_mass" value="0.05" />
+
+  <!-- Depth Camera -->
+  <xacro:property name="camera_length" value="0.02" /> <!--m-->
+  <xacro:property name="camera_width" value="0.1" /> 
+  <xacro:property name="camera_height" value="0.02" /> 
+  <xacro:property name="camera_mass" value="0.01" /> <!--kg-->
+
+  <!-- cylinder_inertia -->
+  <xacro:macro name="cylinder_inertia" params="m r h">
+    <inertia  ixx="${m*(3*r*r+h*h)/12}" ixy = "0" ixz = "0"
+              iyy="${m*(3*r*r+h*h)/12}" iyz = "0"
+              izz="${m*r*r/2}" /> 
+  </xacro:macro>
+
+  <!--box_inertia-->
+  <xacro:macro name="box_inertia" params="m x y z">
+    <inertia  ixx="${m*(y*y+z*z)/12}" ixy = "0" ixz = "0"
+      iyy="${m*(x*x+z*z)/12}" iyz = "0"
+      izz="${m*(x*x+z*z)/12}"
+    />
+  </xacro:macro>
+
+  <!--sphere_inertia-->
+  <xacro:macro name="sphere_inertia" params="m r">
+    <inertia  ixx="${2*m*r*r/5}" ixy = "0" ixz = "0"
+      iyy="${2*m*r*r/5}" iyz = "0"
+      izz="${2*m*r*r/5}"
+    />
+  </xacro:macro>
+
+  <xacro:macro name="wheel" params="lr parent dir z_offset roll"> <!-- lr: left, right -->
+    <link name="${lr}_wheel_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0 " /> 
+        <geometry>
+          <cylinder length="${wheel_height}" radius="${wheel_radius}" />
+        </geometry>
+        <material name="Black" />
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0 " />
+        <geometry>
+          <cylinder length="${wheel_height}" radius="${wheel_radius}" />
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="${wheel_mass}" />
+        <origin xyz="0 0 0" />
+        <xacro:cylinder_inertia  m="${wheel_mass}" r="${wheel_radius}" h="${wheel_height}" />
+      </inertial>
+    </link>
+
+    <joint name="${lr}_wheel_joint" type="continuous">
+      <parent link="${parent}"/>
+      <child link="${lr}_wheel_link"/>
+      <origin xyz="0 ${dir * wheel_spacing / 2} ${z_offset}" rpy="${roll} 0 0" /> 
+      <axis xyz="0 0 1" />
+      <limit effort="100" velocity="100"/>
+      <dynamics damping="0.0" friction="0.1"/>
+    </joint>
+  </xacro:macro>
+
+  <xacro:macro name="caster" params="fb parent dir z_offset roll color"> <!-- fb: front, back -->
+    <link name="${fb}_caster_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0 " /> 
+        <geometry>
+          <sphere radius="${caster_radius}" />
+        </geometry>
+        <material name="${color}" />
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0 " />
+        <geometry>
+          <sphere radius="${caster_radius}" />
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="${caster_mass}" />
+        <origin xyz="0 0 0" />
+        <xacro:sphere_inertia  m="${caster_mass}" r="${caster_radius}" />
+      </inertial>
+    </link>
+
+    <joint name="${fb}_caster_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="${fb}_caster_link"/>
+      <origin xyz="${dir * caster_spacing / 2} 0 ${z_offset}" rpy="${roll} 0 0" /> 
+      <axis xyz="1 1 1" rpy="0 0 0" />
+    </joint>
+  </xacro:macro>
+
+    <!-- Transmission is important to link the joints and the controller -->
+    <!-- <transmission name="${lr}_wheel_joint_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${lr}_wheel_joint" />
+      <actuator name="${lr}_wheel_joint_motor">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission> -->
+
+</robot>
