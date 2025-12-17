@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(demobot2_description)
+project(demobot2_gazebo)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -11,8 +11,7 @@ find_package(ament_cmake REQUIRED)
 # Install files.
 install(DIRECTORY
   rviz
-  urdf
-  meshes
+  worlds
   launch
   DESTINATION share/${PROJECT_NAME}/
 )

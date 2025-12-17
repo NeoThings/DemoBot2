@@ -100,16 +100,6 @@
       <dynamics damping="0.0" friction="0.1"/>
     </joint>
 
-    <!-- Transmission is important to link the joints and the controller -->
-    <!-- <transmission name="${lr}_wheel_joint_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${lr}_wheel_joint" />
-      <actuator name="${lr}_wheel_joint_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission> -->
-
   </xacro:macro>
 
 </robot>

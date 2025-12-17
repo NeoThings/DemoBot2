@@ -9,15 +9,21 @@ from launch_ros.actions import Node
 
 def _create_node(context, *args, **kwargs):
     # perform(context) 只能在有上下文的函数中使用（比如OpaqueFunction或Command来运行时处理）
-    robot = LaunchConfiguration('robot_type').perform(context)
     pkg_path = FindPackageShare('demobot2_description').perform(context)
-    urdf_path = os.path.join(pkg_path, 'urdf', robot, f'{robot}.urdf')
+    run_sim = LaunchConfiguration('use_sim_time').perform(context)
+    robot = LaunchConfiguration('robot_type').perform(context)
+    print(f"Generate URDF description with run simulation: {run_sim}, robot type: {robot}")
+
+    if run_sim.lower() in ['true', '1', 't', 'yes', 'y']:    
+        urdf_path = os.path.join(pkg_path, 'urdf', robot, f'{robot}_gazebo.urdf')
+    else:
+        urdf_path = os.path.join(pkg_path, 'urdf', robot, f'{robot}_urdf.urdf')
 
     if os.path.exists(urdf_path):
         with open(urdf_path, 'r') as f:
             robot_description = f.read()
     else:
-        raise FileNotFoundError(f"No URDF/urdf found for robot '{robot}' in {os.path.join(pkg_path, 'urdf', robot)}")
+        raise FileNotFoundError(f"No URDF/urdf found for robot '{robot}' in {urdf_path}")
 
     robot_state_publish_node = Node(
         package='robot_state_publisher',
@@ -44,7 +50,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
         name='robot_type',
         default_value='demobot',
-        description='demobot, cubicbot, circularbot, etc.',
+        description='Type of robot to launch (demobot, cubicbot, circularbot, etc.)',
     ),
         DeclareLaunchArgument(
         'use_sim_time',

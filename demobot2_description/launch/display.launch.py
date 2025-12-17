@@ -15,13 +15,13 @@ def generate_launch_description():
     robot_type_arg = DeclareLaunchArgument(
         name='robot_type',
         default_value='demobot',
-        description='Type of robot to launch (demobot, circularbot, cubicbot)'
+        description='Type of robot to display (demobot, circularbot, cubicbot)'
     )
 
     use_sim_time_arg = DeclareLaunchArgument(
         name='use_sim_time',
-        default_value='true',
-        description='Use simulation time'
+        default_value='false',
+        description='Dont use Gazebo'
     )
 
     robot_description_launch = IncludeLaunchDescription(
@@ -31,7 +31,7 @@ def generate_launch_description():
         launch_arguments={
             'robot_type': LaunchConfiguration('robot_type'),
             'use_sim_time': LaunchConfiguration('use_sim_time'),
-        }.items(),
+        }.items()
     )
 
     rviz_config_dir = os.path.join(
