@@ -108,10 +108,10 @@ def generate_launch_description():
         gzclient_launch,
         robot_description_launch,
         spawn_node,
-        Node(
-            package='rviz2',
-            executable='rviz2',
-            output='screen',
-            arguments=['-d', rviz_config_dir],
-        )
+        # Node(
+        #     package='rviz2',
+        #     executable='rviz2',
+        #     output='screen',
+        #     arguments=['-d', rviz_config_dir],
+        # )
     ])
