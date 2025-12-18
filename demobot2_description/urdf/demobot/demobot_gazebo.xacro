@@ -6,7 +6,10 @@
   <xacro:arg name="lidar_visual"    default="false"/>
 
   <gazebo reference="base_link">
-    <material>Gazebo/White</material>
+    <material>Gazebo/Yellow</material>
+    <visual>
+      <transparency>0.3</transparency>
+    </visual>
   </gazebo>
 
   <gazebo reference="left_wheel_link">
@@ -115,7 +118,7 @@
       <!-- output -->
       <publish_odom>true</publish_odom>
       <publish_odom_tf>true</publish_odom_tf>
-      <publish_wheel_tf>false</publish_wheel_tf>
+      <publish_wheel_tf>true</publish_wheel_tf>
       <odometry_topic>odom</odometry_topic>
       <odometry_frame>odom</odometry_frame>
       <robot_base_frame>base_footprint</robot_base_frame>

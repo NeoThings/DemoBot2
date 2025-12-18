@@ -133,10 +133,10 @@
       <!-- output -->
       <publish_odom>true</publish_odom>
       <publish_odom_tf>true</publish_odom_tf>
-      <publish_wheel_tf>false</publish_wheel_tf>
+      <publish_wheel_tf>true</publish_wheel_tf>
       <odometry_topic>odom</odometry_topic>
       <odometry_frame>odom</odometry_frame>
-      <robot_base_frame>base_footprint</robot_base_frame> <!-- will pub tf between /odom and /base_footprint-->
+      <robot_base_frame>base_footprint</robot_base_frame>
     </plugin>
   </gazebo>
   

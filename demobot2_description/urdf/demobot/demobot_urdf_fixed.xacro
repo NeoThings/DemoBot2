@@ -1,21 +1,22 @@
 <?xml version="1.0"?>
-<robot name="circularbot_urdf" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="demobot_urdf" xmlns:xacro="http://www.ros.org/wiki/xacro">
   
-  <xacro:include filename="$(find demobot2_description)/urdf/circularbot/circularbot_essential.xacro" />
+  <xacro:include filename="$(find demobot2_description)/urdf/demobot/demobot_essential.xacro" />
 
   <link name="base_footprint"/>
 
   <!-- base_link --> <!--Actual body/chassis of the robot-->
   <link name="base_link">
-    <inertial>
+    <!-- <inertial>
       <mass value="${base_mass}" />
       <origin xyz="0 0 0" />
-      <xacro:cylinder_inertia m="${base_mass}" r="${base_radius}" h="${base_height}" />
-    </inertial>
+        <box_inertia  />
+    </inertial>     -->
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="-0.06 0 0.05" rpy="0 0 0" />
       <geometry>
-          <cylinder length="${base_height}" radius="${base_radius}" />
+          <box size="${base_length} ${base_width} ${base_height}" />
+          <!-- <mesh filename="package://demobot2_description/meshes/demobot/body.stl"/> -->
       </geometry>
       <material name="transyellow">
         <color rgba="1.0 1.0 0.0 0.3"/>
@@ -23,15 +24,15 @@
     </visual>
 
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0 " />
+      <origin xyz="-0.06 0 0.05" rpy="0 0 0" />
       <geometry>
-          <cylinder length="${base_height}" radius="${base_radius}" />
+          <box size="${base_length} ${base_width} ${base_height}" />
       </geometry>
     </collision>
   </link>
   
   <!-- caster -->
-  <!-- <link name="caster_link">
+  <link name="caster_link">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
@@ -52,10 +53,10 @@
                iyy="0.001" iyz="0.0" 
                izz="0.001" />
     </inertial>
-  </link> -->
+  </link>
 
   <link name="imu_link">
-    <visual>
+      <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
 	      <box size="${imu_length} ${imu_width} ${imu_height}" />
@@ -65,7 +66,7 @@
   </link>
 
   <link name="lidar_link">
-    <visual>
+      <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
 	      <cylinder length="${lidar_height}" radius="${lidar_radius}" />
@@ -73,62 +74,33 @@
       <material name="Red" />
     </visual>  
   </link>
-
-  <link name="camera_link">
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-	      <box size="${camera_length} ${camera_width} ${camera_height}" />
-      </geometry>
-      <material name="Red" />
-    </visual>  
-  </link>
-
-  <link name="depth_camera_link">
-  </link>
   
   <joint name="base_joint" type="fixed">
       <parent link="base_footprint"/>
       <child link="base_link" />
-      <origin xyz="0 0 0.5" rpy="0 0 0"/>
+      <origin xyz="0 0 0.0565" rpy="0 0 0"/>
   </joint>
 
-  <!-- <joint name="caster_joint" type="fixed">
+  <joint name="caster_joint" type="fixed">
     <parent link="base_link"/>
     <child link="caster_link"/>
     <origin xyz="-0.15 0.0 -0.0465" rpy="0 0 0"/>
-  </joint> -->
+  </joint>
 
   <joint name="imu_joint" type="fixed">
     <parent link="base_link"/>
     <child link="imu_link"/>
-    <origin xyz="0.0 0.0 -0.4" rpy="0 0 0"/>
+    <origin xyz="0.0 0.0 0.075" rpy="0 0 0"/>
   </joint>
 
   <joint name="lidar_joint" type="fixed">
     <parent link="base_link"/>
     <child link="lidar_link"/>
-    <origin xyz="0 0 -0.32" rpy="0 0 0"/> <!-- default z: -0.32 -->
-  </joint>
-
-  <joint name="camera_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="camera_link"/>
-    <origin xyz="0.31 0 0" rpy="0 0 0"/>
-  </joint>
-
-  <joint name="depth_camera_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="depth_camera_link"/>
-    <origin xyz="0.31 0 0" rpy="${-1.0 * M_PI_2} 0 ${-1.0 * M_PI_2}"/>
+    <origin xyz="0 0 0.105" rpy="0 0 0"/> <!-- default z: 0.105 -->
   </joint>
 
   <!-- Wheels -->
-  <xacro:wheel lr="left" parent="base_link" dir="1" z_offset="-0.43" roll="${-1.0 * M_PI_2}"/>
-  <xacro:wheel lr="right" parent="base_link" dir="-1" z_offset="-0.43" roll="${-1.0 * M_PI_2}"/>
-
-  <!-- Casters -->
-  <xacro:caster fb="front" parent="base_link" dir="1" z_offset="-0.449" roll="0" color="Red"/>
-  <xacro:caster fb="back" parent="base_link" dir="-1" z_offset="-0.449" roll="0" color="Blue"/>
+  <xacro:fixed_wheel lr="left" parent="base_link" dir="1" z_offset="-0.02" roll="${-1.0 * M_PI_2}"/>
+  <xacro:fixed_wheel lr="right" parent="base_link" dir="-1" z_offset="-0.02" roll="${-1.0 * M_PI_2}"/>
 
 </robot>

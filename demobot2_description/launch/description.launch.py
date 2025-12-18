@@ -17,7 +17,7 @@ def _create_node(context, *args, **kwargs):
     if run_sim.lower() in ['true', '1', 't', 'yes', 'y']:    
         urdf_path = os.path.join(pkg_path, 'urdf', robot, f'{robot}_gazebo.urdf')
     else:
-        urdf_path = os.path.join(pkg_path, 'urdf', robot, f'{robot}_urdf.urdf')
+        urdf_path = os.path.join(pkg_path, 'urdf', robot, f'{robot}_urdf_fixed.urdf')
 
     if os.path.exists(urdf_path):
         with open(urdf_path, 'r') as f:
@@ -36,14 +36,16 @@ def _create_node(context, *args, **kwargs):
         }],
     )
 
-    joint_state_publish_node = Node(
-        package='joint_state_publisher',
-        executable='joint_state_publisher',
-        name='joint_state_publisher',
-        output='screen',
-    )
+    # joint_state_publish_node = Node(
+    #     package='joint_state_publisher',
+    #     executable='joint_state_publisher',
+    #     name='joint_state_publisher',
+    #     output='screen',
+    # )
+    # return [robot_state_publish_node, joint_state_publish_node]
 
-    return [robot_state_publish_node, joint_state_publish_node]
+    # OpaqueFunction must return a list (or iterable) of entities/actions.
+    return [robot_state_publish_node]
 
 def generate_launch_description():
     return LaunchDescription([

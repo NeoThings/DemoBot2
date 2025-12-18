@@ -16,10 +16,10 @@ def generate_launch_description():
     
     rviz_config_dir = os.path.join(get_package_share_directory('demobot2_bringup'), 'rviz', 'bringup.rviz')
     world_file_dir = os.path.join(get_package_share_directory('demobot2_gazebo'), 'worlds', 'square.world')
-    nav2_params_file_dir = os.path.join(get_package_share_directory('nav2_bringup'), 'params', 'nav2_params.yaml')
+    nav2_params_file_dir = os.path.join(get_package_share_directory('demobot2_bringup'), 'params', 'nav2_params.yaml')
 
     params = [
-        ('robot_type', 'cubicbot', 'Type of robot to load in gazebo (demobot, circularbot, cubicbot)'),
+        ('robot_type', 'demobot', 'Type of robot to load in gazebo (demobot, circularbot, cubicbot)'),
         ('gui', 'true', 'Start Gazebo with GUI'),
         ('world', world_file_dir, 'World file to load in Gazebo'),
         ('slam', 'true', 'Run slam toolbox'),

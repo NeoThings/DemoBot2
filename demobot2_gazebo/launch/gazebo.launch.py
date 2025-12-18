@@ -35,7 +35,7 @@ def generate_launch_description():
 
     robot_type_arg = DeclareLaunchArgument(
         name='robot_type',
-        default_value='cubicbot',
+        default_value='demobot',
         description='Type of robot to load in gazebo (demobot, circularbot, cubicbot)'
     )
 

@@ -34,15 +34,17 @@
         <box_inertia  />
     </inertial>     -->
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="-0.06 0 0.05"/>
       <geometry>
-        <!-- <box size="${base_length} ${base_width} ${base_height}" /> -->
-        <mesh filename="package://demobot2_description/meshes/demobot/body.stl"/>
+        <box size="0.24 0.2 0.02"/>
+        <!-- <mesh filename="package://demobot2_description/meshes/demobot/body.stl"/> -->
       </geometry>
-      <material name="White"/>
+      <material name="transyellow">
+        <color rgba="1.0 1.0 0.0 0.3"/>
+      </material>
     </visual>
     <collision>
-      <origin rpy="0 0 0 " xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="-0.06 0 0.05"/>
       <geometry>
         <box size="0.24 0.2 0.02"/>
       </geometry>
@@ -90,7 +92,7 @@
   <joint name="base_joint" type="fixed">
     <parent link="base_footprint"/>
     <child link="base_link"/>
-    <origin rpy="0 0 0" xyz="0 0 00.0565"/>
+    <origin rpy="0 0 0" xyz="0 0 0.0565"/>
   </joint>
   <joint name="caster_joint" type="fixed">
     <parent link="base_link"/>
@@ -105,16 +107,16 @@
   <joint name="lidar_joint" type="fixed">
     <parent link="base_link"/>
     <child link="lidar_link"/>
-    <!-- <origin xyz="0 0 0.105" rpy="0 0 0"/> -->
-    <origin rpy="0 0 0" xyz="0 0 0.3"/>
+    <origin rpy="0 0 0" xyz="0 0 0.105"/>
+    <!-- default z: 0.105 -->
   </joint>
   <!-- lr: left, right -->
   <link name="left_wheel_link">
     <visual>
       <origin rpy="0 0 0 " xyz="0 0 0"/>
       <geometry>
-        <!-- <cylinder length="${wheel_height}" radius="${wheel_radius}" /> -->
-        <mesh filename="package://demobot2_description/meshes/demobot/wheel.stl"/>
+        <cylinder length="0.035" radius="0.0365"/>
+        <!-- <mesh filename="package://demobot2_description/meshes/demobot/wheel.stl"/> -->
       </geometry>
       <material name="Black"/>
     </visual>
@@ -143,8 +145,8 @@
     <visual>
       <origin rpy="0 0 0 " xyz="0 0 0"/>
       <geometry>
-        <!-- <cylinder length="${wheel_height}" radius="${wheel_radius}" /> -->
-        <mesh filename="package://demobot2_description/meshes/demobot/wheel.stl"/>
+        <cylinder length="0.035" radius="0.0365"/>
+        <!-- <mesh filename="package://demobot2_description/meshes/demobot/wheel.stl"/> -->
       </geometry>
       <material name="Black"/>
     </visual>
@@ -169,7 +171,10 @@
     <dynamics damping="0.0" friction="0.1"/>
   </joint>
   <gazebo reference="base_link">
-    <material>Gazebo/White</material>
+    <material>Gazebo/Yellow</material>
+    <visual>
+      <transparency>0.3</transparency>
+    </visual>
   </gazebo>
   <gazebo reference="left_wheel_link">
     <mu1>1</mu1>
@@ -272,7 +277,7 @@
       <!-- output -->
       <publish_odom>true</publish_odom>
       <publish_odom_tf>true</publish_odom_tf>
-      <publish_wheel_tf>false</publish_wheel_tf>
+      <publish_wheel_tf>true</publish_wheel_tf>
       <odometry_topic>odom</odometry_topic>
       <odometry_frame>odom</odometry_frame>
       <robot_base_frame>base_footprint</robot_base_frame>

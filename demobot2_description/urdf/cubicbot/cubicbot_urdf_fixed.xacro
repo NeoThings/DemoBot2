@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
-<robot name="circularbot_urdf" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="cubicbot_urdf" xmlns:xacro="http://www.ros.org/wiki/xacro">
   
-  <xacro:include filename="$(find demobot2_description)/urdf/circularbot/circularbot_essential.xacro" />
+  <xacro:include filename="$(find demobot2_description)/urdf/cubicbot/cubicbot_essential.xacro" />
+
 
   <link name="base_footprint"/>
 
@@ -10,12 +11,12 @@
     <inertial>
       <mass value="${base_mass}" />
       <origin xyz="0 0 0" />
-      <xacro:cylinder_inertia m="${base_mass}" r="${base_radius}" h="${base_height}" />
+      <xacro:box_inertia m="${base_mass}" x="${base_length}" y="${base_width}" z="${base_height}" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-          <cylinder length="${base_height}" radius="${base_radius}" />
+          <box size="${base_length} ${base_width} ${base_height}" />
       </geometry>
       <material name="transyellow">
         <color rgba="1.0 1.0 0.0 0.3"/>
@@ -25,7 +26,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0 " />
       <geometry>
-          <cylinder length="${base_height}" radius="${base_radius}" />
+          <box size="${base_length} ${base_width} ${base_height}" />
       </geometry>
     </collision>
   </link>
@@ -124,8 +125,8 @@
   </joint>
 
   <!-- Wheels -->
-  <xacro:wheel lr="left" parent="base_link" dir="1" z_offset="-0.43" roll="${-1.0 * M_PI_2}"/>
-  <xacro:wheel lr="right" parent="base_link" dir="-1" z_offset="-0.43" roll="${-1.0 * M_PI_2}"/>
+  <xacro:fixed_wheel lr="left" parent="base_link" dir="1" z_offset="-0.43" roll="${-1.0 * M_PI_2}"/>
+  <xacro:fixed_wheel lr="right" parent="base_link" dir="-1" z_offset="-0.43" roll="${-1.0 * M_PI_2}"/>
 
   <!-- Casters -->
   <xacro:caster fb="front" parent="base_link" dir="1" z_offset="-0.449" roll="0" color="Red"/>

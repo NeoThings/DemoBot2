@@ -124,8 +124,8 @@
   </joint>
 
   <!-- Wheels -->
-  <xacro:wheel lr="left" parent="base_link" dir="1" z_offset="-0.43" roll="${-1.0 * M_PI_2}"/>
-  <xacro:wheel lr="right" parent="base_link" dir="-1" z_offset="-0.43" roll="${-1.0 * M_PI_2}"/>
+  <xacro:fixed_wheel lr="left" parent="base_link" dir="1" z_offset="-0.43" roll="${-1.0 * M_PI_2}"/>
+  <xacro:fixed_wheel lr="right" parent="base_link" dir="-1" z_offset="-0.43" roll="${-1.0 * M_PI_2}"/>
 
   <!-- Casters -->
   <xacro:caster fb="front" parent="base_link" dir="1" z_offset="-0.449" roll="0" color="Red"/>
