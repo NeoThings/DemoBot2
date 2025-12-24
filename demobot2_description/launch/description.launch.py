@@ -2,7 +2,8 @@ import os
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, OpaqueFunction
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, Command
+from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
 
@@ -15,15 +16,20 @@ def _create_node(context, *args, **kwargs):
     print(f"Generate URDF description with run simulation: {run_sim}, robot type: {robot}")
 
     if run_sim.lower() in ['true', '1', 't', 'yes', 'y']:    
-        urdf_path = os.path.join(pkg_path, 'urdf', robot, f'{robot}_gazebo.urdf')
+        urdf_path = os.path.join(pkg_path, 'urdf', robot, f'{robot}_gazebo.xacro')
     else:
-        urdf_path = os.path.join(pkg_path, 'urdf', robot, f'{robot}_urdf_fixed.urdf')
+        urdf_path = os.path.join(pkg_path, 'urdf', robot, f'{robot}_urdf_fixed.xacro')
 
-    if os.path.exists(urdf_path):
-        with open(urdf_path, 'r') as f:
-            robot_description = f.read()
-    else:
-        raise FileNotFoundError(f"No URDF/urdf found for robot '{robot}' in {urdf_path}")
+    print(f"URDF path: {urdf_path}")
+
+    if not os.path.exists(urdf_path):
+        raise FileNotFoundError(f"No URDF found at: {urdf_path}")
+
+    # if os.path.exists(urdf_path):
+    #     with open(urdf_path, 'r') as f:
+    #         robot_description = f.read()
+    # else:
+    #     raise FileNotFoundError(f"No URDF/urdf found for robot '{robot}' in {urdf_path}")
 
     robot_state_publish_node = Node(
         package='robot_state_publisher',
@@ -32,7 +38,7 @@ def _create_node(context, *args, **kwargs):
         output='screen',
         parameters=[{
             'use_sim_time': LaunchConfiguration('use_sim_time'),
-            'robot_description': robot_description,
+            'robot_description': ParameterValue(Command(['xacro ', urdf_path]), value_type=str),
         }],
     )
 

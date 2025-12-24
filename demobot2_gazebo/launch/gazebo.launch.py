@@ -12,7 +12,6 @@ from launch.conditions import IfCondition
 
 
 def generate_launch_description():
-    # description_launch_dir = PathJoinSubstitution([FindPackageShare('demobot2_description'), 'launch'])
     urdf_path = os.path.join(get_package_share_directory('demobot2_description'), 'urdf', 'demobot', 'demobot_urdf.urdf')
 
     gui_arg = DeclareLaunchArgument(

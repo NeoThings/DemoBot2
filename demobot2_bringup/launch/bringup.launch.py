@@ -14,20 +14,21 @@ from launch.conditions import IfCondition
 def generate_launch_description():
     ld = LaunchDescription()
     
-    rviz_config_dir = os.path.join(get_package_share_directory('demobot2_bringup'), 'rviz', 'bringup.rviz')
-    world_file_dir = os.path.join(get_package_share_directory('demobot2_gazebo'), 'worlds', 'square.world')
-    map_file_dir = os.path.join(get_package_share_directory('demobot2_bringup'), 'maps', 'square.yaml')
-    nav2_params_file_dir = os.path.join(get_package_share_directory('demobot2_bringup'), 'params', 'nav2_params.yaml')
+    rviz_config_dir = os.path.join(get_package_share_directory('demobot2_bringup'), 'rviz')
+    worlds_file_dir = os.path.join(get_package_share_directory('demobot2_gazebo'), 'worlds')
+    maps_file_dir = os.path.join(get_package_share_directory('demobot2_bringup'), 'maps')
+    params_file_dir = os.path.join(get_package_share_directory('demobot2_bringup'), 'params')
 
     params = [
         ('robot_type', 'demobot', 'Type of robot to load in gazebo (demobot, circularbot, cubicbot)'),
         ('gui', 'true', 'Start Gazebo with GUI'),
-        ('world', world_file_dir, 'World file to load in Gazebo'),
-        ('map', map_file_dir, 'map file to load in AMCL'),
-        ('slam', 'false', 'Run slam toolbox'),
-        ('localization', 'true', 'Run amcl and map_server'),
-        ('params_file', nav2_params_file_dir, 'navigation parameters file'),
         ('use_sim_time', 'true', 'Use Gazebo simulation time'),
+        ('world', os.path.join(worlds_file_dir, 'square.world'), 'World file to load in Gazebo'),
+        ('map', os.path.join(maps_file_dir, 'square.yaml'), 'map file to load in AMCL'),
+        ('params_file', os.path.join(params_file_dir, 'nav2_params.yaml'), 'navigation parameters file'),
+        ('slam', 'false', 'Run slam toolbox'),
+        # ('estimation', 'true', 'Run robot_localization EKF'),
+        ('localization', 'true', 'Run amcl and map_server'),
         ('namespace', '', 'Top-level namespace'),
         ('autostart', 'true', 'Automatically startup the nav2 stack'),
     ]
@@ -71,16 +72,26 @@ def generate_launch_description():
         # }.items()
     )
 
+    estimator_node = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='ekf_filter_node',
+        output='screen',
+        parameters=[os.path.join(params_file_dir, 'ekf.yaml'), 
+                    {'use_sim_time': LaunchConfiguration('use_sim_time')}]
+    )
+
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
         output='screen',
-        arguments=['-d', rviz_config_dir],
+        arguments=['-d', os.path.join(rviz_config_dir, 'bringup.rviz')],
     )
 
     ld.add_action(gazebo_launch)
     ld.add_action(navigation_launch)
     ld.add_action(localization_launch)
+    ld.add_action(estimator_node)
     ld.add_action(slam_launch)
     ld.add_action(rviz_node)
 
