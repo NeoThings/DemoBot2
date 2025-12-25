@@ -30,30 +30,6 @@
       </geometry>
     </collision>
   </link>
-  
-  <!-- caster -->
-  <!-- <link name="caster_link">
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-	      <sphere radius="${caster_radius}" />
-      </geometry>
-      <material name="Black" />
-    </visual>  
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-	        <sphere radius="${caster_radius}" />
-      </geometry>
-    </collision>   
-    <inertial>
-      <mass value="${caster_mass}" />
-      <origin xyz="0 0 0" />
-      <inertia ixx="0.001" ixy="0.0" ixz="0.0"
-               iyy="0.001" iyz="0.0" 
-               izz="0.001" />
-    </inertial>
-  </link> -->
 
   <link name="imu_link">
     <visual>
@@ -82,7 +58,18 @@
 	      <box size="${camera_length} ${camera_width} ${camera_height}" />
       </geometry>
       <material name="Red" />
-    </visual>  
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0 " />
+      <geometry>
+        <box size="${camera_length} ${camera_width} ${camera_height}" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${camera_mass}" />
+      <origin xyz="0 0 0" />
+      <xacro:box_inertia m="${camera_mass}" x="${camera_length}" y="${camera_width}" z="${camera_height}" />
+    </inertial>
   </link>
 
   <link name="depth_camera_link">
@@ -93,12 +80,6 @@
       <child link="base_footprint" />
       <origin xyz="0 0 -0.5" rpy="0 0 0"/>
   </joint>
-
-  <!-- <joint name="caster_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="caster_link"/>
-    <origin xyz="-0.15 0.0 -0.0465" rpy="0 0 0"/>
-  </joint> -->
 
   <joint name="imu_joint" type="fixed">
     <parent link="base_link"/>
@@ -119,9 +100,9 @@
   </joint>
 
   <joint name="depth_camera_joint" type="fixed">
-    <parent link="base_link"/>
+    <parent link="camera_link"/>
     <child link="depth_camera_link"/>
-    <origin xyz="0.31 0 0" rpy="${-1.0 * M_PI_2} 0 ${-1.0 * M_PI_2}"/>
+    <origin xyz="0 0 0" rpy="${-1.0 * M_PI_2} 0 ${-1.0 * M_PI_2}"/>
   </joint>
 
   <!-- Wheels -->

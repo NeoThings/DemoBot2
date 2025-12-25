@@ -52,9 +52,7 @@
       <update_rate>100</update_rate>
       <plugin name="imu_plugin" filename="libgazebo_ros_imu_sensor.so">
         <ros>
-          <!-- publish to /imu/data -->
-          <!-- <namespace>/imu</namespace>
-          <remapping>~/out:=data</remapping> -->
+          <!-- <namespace>/sensors</namespace> -->
           <remapping>~/out:=imu_data</remapping>
         </ros>
       </plugin>
@@ -90,8 +88,7 @@
       </ray>
       <plugin name="lidar_plugin" filename="libgazebo_ros_ray_sensor.so">
         <ros>
-            <!-- <namespace>/scan</namespace>
-            <remapping>~/out:=data</remapping> -->
+            <!-- <namespace>/sensors</namespace> -->
             <remapping>~/out:=scan</remapping>
         </ros>
         <output_type>sensor_msgs/LaserScan</output_type>

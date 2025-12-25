@@ -4,12 +4,11 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.actions import IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 from launch.conditions import IfCondition
-
+from launch_ros.actions import Node
 
 def generate_launch_description():
     ld = LaunchDescription()
@@ -17,7 +16,6 @@ def generate_launch_description():
     rviz_config_dir = os.path.join(get_package_share_directory('demobot2_bringup'), 'rviz')
     worlds_file_dir = os.path.join(get_package_share_directory('demobot2_gazebo'), 'worlds')
     maps_file_dir = os.path.join(get_package_share_directory('demobot2_bringup'), 'maps')
-    params_file_dir = os.path.join(get_package_share_directory('demobot2_bringup'), 'params')
 
     params = [
         ('robot_type', 'demobot', 'Type of robot to load in gazebo (demobot, circularbot, cubicbot)'),
@@ -25,7 +23,6 @@ def generate_launch_description():
         ('use_sim_time', 'true', 'Use Gazebo simulation time'),
         ('world', os.path.join(worlds_file_dir, 'square.world'), 'World file to load in Gazebo'),
         ('map', os.path.join(maps_file_dir, 'square.yaml'), 'map file to load in AMCL'),
-        ('params_file', os.path.join(params_file_dir, 'nav2_params.yaml'), 'navigation parameters file'),
         ('slam', 'false', 'Run slam toolbox'),
         # ('estimation', 'true', 'Run robot_localization EKF'),
         ('localization', 'true', 'Run amcl and map_server'),
@@ -35,6 +32,13 @@ def generate_launch_description():
     
     for name, default, desc in params:
         ld.add_action(DeclareLaunchArgument(name, default_value=default, description=desc))
+    
+    nav_params_file = PathJoinSubstitution(
+        [FindPackageShare('demobot2_bringup'), 'params', 
+         LaunchConfiguration('robot_type'), 'nav2_params.yaml'])
+    ekf_params_file = PathJoinSubstitution(
+        [FindPackageShare('demobot2_bringup'), 'params', 
+         LaunchConfiguration('robot_type'), 'ekf.yaml'])
 
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([FindPackageShare('demobot2_gazebo'), '/launch', '/gazebo.launch.py']),
@@ -50,7 +54,7 @@ def generate_launch_description():
             # 由于navigation_launch中在给params_file默认值前,调用了RewrittenYaml,所以需要显示传入params_file,防止RewrittenYaml找不到文件报错
             'use_sim_time': LaunchConfiguration('use_sim_time'),
             'autostart': LaunchConfiguration('autostart'),
-            'params_file': LaunchConfiguration('params_file'),
+            'params_file': nav_params_file,
         }.items()
     )
 
@@ -59,7 +63,7 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration('localization')),
         launch_arguments={
             'use_sim_time': LaunchConfiguration('use_sim_time'),
-            'params_file': LaunchConfiguration('params_file'),
+            'params_file': nav_params_file,
             'autostart': LaunchConfiguration('autostart'),
             'map': LaunchConfiguration('map'),
         }.items()
@@ -77,7 +81,7 @@ def generate_launch_description():
         executable='ekf_node',
         name='ekf_filter_node',
         output='screen',
-        parameters=[os.path.join(params_file_dir, 'ekf.yaml'), 
+        parameters=[ekf_params_file, 
                     {'use_sim_time': LaunchConfiguration('use_sim_time')}]
     )
 
@@ -94,5 +98,5 @@ def generate_launch_description():
     ld.add_action(estimator_node)
     ld.add_action(slam_launch)
     ld.add_action(rviz_node)
-
+    
     return ld 
