@@ -82,15 +82,15 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        camera_depth_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         camera_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        depth_camera_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         front_caster_link:
           Alpha: 1
           Show Axes: false
@@ -182,9 +182,9 @@ Visualization Manager:
           Value: true
         base_link:
           Value: true
-        camera_link:
+        camera_depth_frame:
           Value: true
-        depth_camera_link:
+        camera_link:
           Value: true
         front_caster_link:
           Value: true
@@ -214,7 +214,7 @@ Visualization Manager:
               base_footprint:
                 {}
               camera_link:
-                depth_camera_link:
+                camera_depth_frame:
                   {}
               front_caster_link:
                 {}
@@ -393,7 +393,7 @@ Visualization Manager:
       Color: 249; 240; 107
       Color Transformer: FlatColor
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Max Intensity: 4096
@@ -412,6 +412,74 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /depth_camera/points
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: false
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 0.925000011920929
+        Min Value: 0.02500000037252903
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz_default_plugins/PointCloud2
+      Color: 143; 240; 164
+      Color Transformer: FlatColor
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: global_stvl
+      Position Transformer: XYZ
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.05000000074505806
+      Style: Boxes
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /global_costmap/voxel_grid
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 0.925000011920929
+        Min Value: 0.02500000037252903
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz_default_plugins/PointCloud2
+      Color: 249; 240; 107
+      Color Transformer: FlatColor
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: local_stvl
+      Position Transformer: XYZ
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.05000000074505806
+      Style: Boxes
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /local_costmap/voxel_grid
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
@@ -461,25 +529,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/ThirdPersonFollower
-      Distance: 3.7262449264526367
+      Distance: 6.776556015014648
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.22197604179382324
-        Y: -0.9250812530517578
-        Z: -1.757445716066286e-05
+        X: -0.5116856098175049
+        Y: -1.5870170593261719
+        Z: -1.757476456987206e-05
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.549797534942627
+      Pitch: 0.48979777097702026
       Target Frame: <Fixed Frame>
       Value: ThirdPersonFollower (rviz_default_plugins)
-      Yaw: 3.987405776977539
+      Yaw: 3.8324027061462402
     Saved: ~
 Window Geometry:
   Displays:

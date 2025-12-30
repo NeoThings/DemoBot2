@@ -22,7 +22,7 @@ def generate_launch_description():
 
     world_arg = DeclareLaunchArgument(
         name='world',
-        default_value=PathJoinSubstitution([FindPackageShare('demobot2_gazebo'), 'worlds', 'square.world']),
+        default_value=PathJoinSubstitution([FindPackageShare('demobot2_gazebo'), 'worlds', 'rectangle.world']),
         description='World file to load in Gazebo'
     )
 

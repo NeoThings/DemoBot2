@@ -9,6 +9,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
 from launch.conditions import IfCondition
 from launch_ros.actions import Node
+from launch.actions import TimerAction
 
 def generate_launch_description():
     ld = LaunchDescription()
@@ -18,7 +19,7 @@ def generate_launch_description():
     maps_file_dir = os.path.join(get_package_share_directory('demobot2_bringup'), 'maps')
 
     params = [
-        ('robot_type', 'demobot', 'Type of robot to load in gazebo (demobot, circularbot, cubicbot)'),
+        ('robot_type', 'circularbot', 'Type of robot to load in gazebo (demobot, circularbot, cubicbot)'),
         ('gui', 'true', 'Start Gazebo with GUI'),
         ('use_sim_time', 'true', 'Use Gazebo simulation time'),
         ('world', os.path.join(worlds_file_dir, 'square.world'), 'World file to load in Gazebo'),
@@ -92,11 +93,15 @@ def generate_launch_description():
         arguments=['-d', os.path.join(rviz_config_dir, 'bringup.rviz')],
     )
 
+    ld.add_action(rviz_node)
     ld.add_action(gazebo_launch)
+    # ld.add_action(localization_launch)
     ld.add_action(navigation_launch)
-    ld.add_action(localization_launch)
     ld.add_action(estimator_node)
     ld.add_action(slam_launch)
-    ld.add_action(rviz_node)
+    ld.add_action(TimerAction(
+        period=5.0,  # Delay to let sim time flow first
+        actions=[localization_launch],
+    ))
     
     return ld 

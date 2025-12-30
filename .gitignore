@@ -1,3 +1,5 @@
 /navigation2
 /slam_toolbox
 /estimator/robot_localization
+/plugins/spatio_temporal_voxel_layer
+/navigation2_tutorials
