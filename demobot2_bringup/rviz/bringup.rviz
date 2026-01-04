@@ -251,6 +251,27 @@ Visualization Manager:
       Value: true
     - Alpha: 0.699999988079071
       Class: rviz_default_plugins/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: speed_mask
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /speed_filter_mask
+      Update Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /speed_filter_mask_updates
+      Use Timestamp: false
+      Value: true
+    - Alpha: 0.699999988079071
+      Class: rviz_default_plugins/Map
       Color Scheme: costmap
       Draw Behind: false
       Enabled: true
@@ -528,26 +549,21 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Class: rviz_default_plugins/ThirdPersonFollower
-      Distance: 6.776556015014648
+      Angle: 0
+      Class: rviz_default_plugins/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
-      Focal Point:
-        X: -0.5116856098175049
-        Y: -1.5870170593261719
-        Z: -1.757476456987206e-05
-      Focal Shape Fixed Size: true
-      Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.48979777097702026
+      Scale: 38.51251983642578
       Target Frame: <Fixed Frame>
-      Value: ThirdPersonFollower (rviz_default_plugins)
-      Yaw: 3.8324027061462402
+      Value: TopDownOrtho (rviz_default_plugins)
+      X: -0.2520298361778259
+      Y: 0.36040136218070984
     Saved: ~
 Window Geometry:
   Displays:

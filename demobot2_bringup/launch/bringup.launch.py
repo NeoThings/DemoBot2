@@ -51,6 +51,11 @@ def generate_launch_description():
     keepout_mask_file = PathJoinSubstitution(
         [FindPackageShare('demobot2_bringup'), 'maps', 
          LaunchConfiguration('map_name'), keepout_mask_name])
+    
+    speed_mask_name = (LaunchConfiguration('map_name'), '_speed.yaml')
+    speed_mask_file = PathJoinSubstitution(
+        [FindPackageShare('demobot2_bringup'), 'maps', 
+         LaunchConfiguration('map_name'), speed_mask_name])
 
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([FindPackageShare('demobot2_gazebo'), '/launch', '/gazebo.launch.py']),
@@ -88,6 +93,7 @@ def generate_launch_description():
             'autostart': LaunchConfiguration('autostart'),
             'params_file': nav_params_file,
             'keepout_mask': keepout_mask_file,
+            'speed_mask': speed_mask_file,
         }.items()
     )
 
@@ -117,13 +123,16 @@ def generate_launch_description():
 
     ld.add_action(rviz_node)
     ld.add_action(gazebo_launch)
-    ld.add_action(navigation_launch)
-    ld.add_action(costmap_filter_launch)
     ld.add_action(estimator_node)
+    ld.add_action(navigation_launch)
     ld.add_action(slam_launch)
     ld.add_action(TimerAction(
         period=5.0,  # Delay to let sim time flow first
         actions=[localization_launch],
+    ))
+    ld.add_action(TimerAction(
+        period=5.0,  # Delay to let sim time flow first
+        actions=[costmap_filter_launch],
     ))
     
     return ld 
