@@ -4,7 +4,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.actions import IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
 from launch.conditions import IfCondition, UnlessCondition
@@ -17,11 +17,12 @@ def generate_launch_description():
     rviz_config_dir = os.path.join(get_package_share_directory('demobot2_bringup'), 'rviz')
 
     params = [
-        ('robot_type', 'circularbot', 'Type of robot to load in gazebo (demobot, circularbot, cubicbot)'),
+        ('robot_type', 'cubicbot', 'Type of robot to load in gazebo (demobot, circularbot, cubicbot)'),
         ('world_name', 'square', 'world to load'),
         ('map_name', 'square', 'map to load'),
         ('gui', 'true', 'Start Gazebo with GUI'),
         ('use_sim_time', 'true', 'Use Gazebo simulation time'),
+        ('use_costmap_filter', 'false', 'Use costmap filter'),
         ('slam', 'false', 'Run slam toolbox'),
         ('estimation', 'true', 'Run robot_localization EKF'),
         ('namespace', '', 'Top-level namespace'),
@@ -46,16 +47,6 @@ def generate_launch_description():
     map_file = PathJoinSubstitution(
         [FindPackageShare('demobot2_bringup'), 'maps', 
          LaunchConfiguration('map_name'), map_file_name])
-    
-    keepout_mask_name = (LaunchConfiguration('map_name'), '_keepout.yaml')
-    keepout_mask_file = PathJoinSubstitution(
-        [FindPackageShare('demobot2_bringup'), 'maps', 
-         LaunchConfiguration('map_name'), keepout_mask_name])
-    
-    speed_mask_name = (LaunchConfiguration('map_name'), '_speed.yaml')
-    speed_mask_file = PathJoinSubstitution(
-        [FindPackageShare('demobot2_bringup'), 'maps', 
-         LaunchConfiguration('map_name'), speed_mask_name])
 
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([FindPackageShare('demobot2_gazebo'), '/launch', '/gazebo.launch.py']),
@@ -66,7 +57,9 @@ def generate_launch_description():
     )
 
     navigation_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([FindPackageShare('demobot2_bringup'), '/launch', '/navigation_launch.py']),
+        PythonLaunchDescriptionSource(PathJoinSubstitution(
+            [FindPackageShare('demobot2_bringup'), 'launch', 
+             LaunchConfiguration('robot_type'), 'navigation_launch.py'])),
         launch_arguments={
             # 由于navigation_launch中在给params_file默认值前,调用了RewrittenYaml,所以需要显示传入params_file,防止RewrittenYaml找不到文件报错
             'use_sim_time': LaunchConfiguration('use_sim_time'),
@@ -76,24 +69,15 @@ def generate_launch_description():
     )
 
     localization_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([FindPackageShare('demobot2_bringup'), '/launch', '/localization_launch.py']),
+        PythonLaunchDescriptionSource(PathJoinSubstitution(
+            [FindPackageShare('demobot2_bringup'), 'launch', 
+             LaunchConfiguration('robot_type'), 'localization_launch.py'])),
         condition=UnlessCondition(LaunchConfiguration('slam')),
         launch_arguments={
             'use_sim_time': LaunchConfiguration('use_sim_time'),
-            'params_file': nav_params_file,
             'autostart': LaunchConfiguration('autostart'),
+            'params_file': nav_params_file,
             'map': map_file,
-        }.items()
-    )
-
-    costmap_filter_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([FindPackageShare('demobot2_bringup'), '/launch', '/costmap_filter_launch.py']),
-        launch_arguments={
-            'use_sim_time': LaunchConfiguration('use_sim_time'),
-            'autostart': LaunchConfiguration('autostart'),
-            'params_file': nav_params_file,
-            'keepout_mask': keepout_mask_file,
-            'speed_mask': speed_mask_file,
         }.items()
     )
 
@@ -118,7 +102,8 @@ def generate_launch_description():
         package='rviz2',
         executable='rviz2',
         output='screen',
-        arguments=['-d', os.path.join(rviz_config_dir, 'bringup.rviz')],
+        arguments=['-d', os.path.join(rviz_config_dir, 'cubicbot_bringup.rviz')],
+        parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}]
     )
 
     ld.add_action(rviz_node)
@@ -129,10 +114,6 @@ def generate_launch_description():
     ld.add_action(TimerAction(
         period=5.0,  # Delay to let sim time flow first
         actions=[localization_launch],
-    ))
-    ld.add_action(TimerAction(
-        period=5.0,  # Delay to let sim time flow first
-        actions=[costmap_filter_launch],
     ))
     
     return ld 
